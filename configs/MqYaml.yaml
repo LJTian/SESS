@@ -1,0 +1,27 @@
+name: "mq"
+domain: "server.mq.msg"
+version: "0.0.1"
+connect:
+  - user: "guest"
+    passwd: "guest"
+    ip: "10.211.55.3"
+    port: "5672"
+topic:
+  - name: "msgTran"
+    producer:
+    - name: "ProJob1"
+      routKey: "log.cron.job"
+    - name: "ProApi1"
+      routKey: "log.trans.api"
+    consumer:
+    - name: "ConCron"
+      routKey: "*.cron.*"
+      autoAck: yes
+
+    - name: "ConLog"
+      routKey: "log#"
+      autoAck: no
+
+    - name: "ConTrans"
+      routKey: "*.trans.*"
+      autoAck: yes
