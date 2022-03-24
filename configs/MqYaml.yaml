@@ -11,17 +11,22 @@ topic:
     producer:
     - name: "ProJob1"
       routKey: "log.cron.job"
+      num: 5
     - name: "ProApi1"
       routKey: "log.trans.api"
+      num: 5
     consumer:
     - name: "ConCron"
       routKey: "*.cron.*"
       autoAck: yes
+      num: 5
 
     - name: "ConLog"
       routKey: "log#"
       autoAck: no
+      num: 5
 
     - name: "ConTrans"
       routKey: "*.trans.*"
       autoAck: yes
+      num: 5
