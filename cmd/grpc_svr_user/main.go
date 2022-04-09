@@ -23,13 +23,14 @@ func main() {
 	IP := flag.String("ip", "0.0.0.0", "ip地址")
 	Port := flag.Int("port", 0, "端口号")
 
-	// 加载配置信息
 	// 1-加载日志配置
 	initialize.InitLoger()
 	zap.S().Info("加载日志文件配置成功")
+
 	// 2-链接配置中心
 	initialize.InitConfig()
 	zap.S().Info("链接配置中心成功")
+
 	// 3-初始化数据库
 	initialize.InitDB()
 	zap.S().Info("初始化数据库成功")
@@ -60,5 +61,4 @@ func main() {
 	//	zap.S().Info("注销失败")
 	//}
 	zap.S().Info("注销成功")
-
 }
