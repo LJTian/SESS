@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = ".;UserProto";
+
+// 服务名称
+service UserGrpcService {
+
+  // 创建用户
+  rpc CreatUser(CreatUserInfo) returns (UserInfoResponse);
+//  // 服务端流式返回
+//  rpc LotsOfReplies(HelloRequest) returns (stream HelloResponseStream);
+//  // 客户端流式
+//  rpc LotsOfGreetings(stream HelloRequestStream) returns (HelloResponse);
+//  // 双流式
+//  rpc BidiHello(stream HelloRequestStream) returns (stream HelloResponseStream);
+}
+
+message CreatUserInfo {
+  string nickName = 1; // 昵称
+  string passWord = 2; // 密码
+  string mobile = 3; // 手机号
+}
+
+message UserInfoResponse {
+  int32 userId =1; // 用户ID
+  string nickName = 2; // 昵称
+  string passWord = 3; // 密码
+  string mobile = 4; // 手机号
+}

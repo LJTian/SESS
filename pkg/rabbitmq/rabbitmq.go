@@ -42,6 +42,16 @@ func (this *RabbitMQ) CloseConnect() (err error) {
 	return this.conn.Close()
 }
 
+func (this *RabbitMQ) CloseChannelByTopic(topic string) (err error) {
+	// CloseChannelByTopic 基于事件主题 关闭管道
+	if v, ok := this.channelMap[topic]; ok {
+		v.ExchangeDelete(topic, false, true)
+		v.Close()
+		return
+	}
+	return errors.New(ErrDoesNotExist)
+}
+
 // CreatExchange 创建转换器
 func (this *RabbitMQ) CreatExchange(exchangeType string, topic string) (err error) {
 
@@ -102,16 +112,6 @@ func (this *RabbitMQ) BindQueue(topic string, queueName string, routingKey strin
 		nil,
 	)
 	return
-}
-
-// CloseChannelByTopic 基于事件主题 关闭管道
-func (this *RabbitMQ) CloseChannelByTopic(topic string) (err error) {
-	if v, ok := this.channelMap[topic]; ok {
-		v.ExchangeDelete(topic, false, true)
-		v.Close()
-		return
-	}
-	return errors.New(ErrDoesNotExist)
 }
 
 // Send 发送消息
