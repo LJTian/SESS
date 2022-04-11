@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"SESS/cmd/grpc_svr_user/global"
+	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
 	"io/ioutil"
 
 	"github.com/nacos-group/nacos-sdk-go/clients"
@@ -13,12 +14,11 @@ import (
 	config2 "SESS/cmd/grpc_svr_user/config"
 )
 
-func InitConfig() {
-
-	pathStr := "/Users/ljtian/data/git/github.com/LJTian/SESS/cmd/grpc_svr_user/Nac.yaml"
+func ConnNac(fileName string) config_client.IConfigClient {
+	pathStr := fileName
 	config, err := ioutil.ReadFile(pathStr)
 	if err != nil {
-		return
+		zap.S().Panic(err)
 	}
 	var this config2.NacOS
 	err = yaml.Unmarshal(config, &this)
@@ -52,16 +52,41 @@ func InitConfig() {
 	if err != nil {
 		zap.S().Panic(err)
 	}
+
+	return configClient
+}
+
+func getConfigInfo(configClient config_client.IConfigClient, DataId, Group string) string {
 	DbInfo, err := configClient.GetConfig(vo.ConfigParam{
-		DataId: "dbconfig.yaml",
-		Group:  "dev",
+		DataId: DataId,
+		Group:  Group,
 	})
 	if err != nil {
-		return
+		return ""
 	}
+	return DbInfo
+}
 
-	err = yaml.Unmarshal([]byte(DbInfo), &global.DBCfg)
-	zap.S().Info(global.DBCfg)
+func InitConfig(fileName string) {
+
+	// 1-链接Nac
+	configClient := ConnNac(fileName)
+	// 2-获取数据信息
+	if str := getConfigInfo(configClient, "dbconfig.yaml", "dev"); str != "" {
+		if err := yaml.Unmarshal([]byte(str), &global.DBCfg); err != nil {
+			zap.S().Panic(global.DBCfg)
+			return
+		}
+		zap.S().Info(global.DBCfg)
+	}
+	// 3-获取服务注册中心信息
+	if str := getConfigInfo(configClient, "consul.yaml", "dev"); str != "" {
+		if err := yaml.Unmarshal([]byte(str), &global.Consul); err != nil {
+			zap.S().Panic(global.Consul)
+			return
+		}
+		zap.S().Info(global.Consul)
+	}
 
 	//// 检测配置文件改变
 	//configClient.ListenConfig(vo.ConfigParam{

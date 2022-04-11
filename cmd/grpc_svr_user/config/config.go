@@ -6,6 +6,11 @@ type NacOS struct {
 	NamespaceId string `yaml:"namespaceId"`
 }
 
+type Consul struct {
+	IP   string `yaml:"ip"`
+	Port int    `yaml:"port"`
+}
+
 type DBInfo struct {
 	IP       string `yaml:"ip"`
 	Port     int    `yaml:"port"`
