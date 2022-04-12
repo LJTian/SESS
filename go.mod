@@ -3,6 +3,7 @@ module SESS
 go 1.16
 
 require (
+	github.com/anaskhan96/go-password-encoder v0.0.0-20201010210601-c765b799fd72
 	github.com/google/uuid v1.1.2
 	github.com/hashicorp/consul/api v1.12.0
 	github.com/jmoiron/sqlx v1.3.4
