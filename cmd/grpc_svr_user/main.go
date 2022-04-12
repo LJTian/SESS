@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 
 	"SESS/cmd/grpc_svr_user/global"
@@ -46,22 +47,25 @@ func main() {
 	zap.S().Info("启动grpc服务成功")
 
 	// 5-向注册中心进行注册
+	serverId := uuid.New().String()
 	global.GClient = consul.Connet(global.Consul.IP, global.Consul.Port)
 	consul.Register(global.GClient,
 		"192.168.124.5",
 		*Port,
 		ServerName,
 		[]string{""},
-		ServerName,
+		serverId,
 	)
 	zap.S().Info("向注册中心进行注册成功")
+	zap.S().Infof("服务IP: [%s] port: [%d] ServerName: [%s] ServerId: [%s]",
+		"192.168.124.5", *Port, ServerName, serverId)
 
 	// 6-获取信号，优雅退出
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	consul.UnRegister(global.GClient,
-		ServerName,
+		serverId,
 	)
 	zap.S().Info("注销成功")
 }

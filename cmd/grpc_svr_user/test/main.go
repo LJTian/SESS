@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	conn, err := grpc.Dial("127.0.0.1:62029", grpc.WithInsecure())
+	conn, err := grpc.Dial("192.168.124.5:53131", grpc.WithInsecure())
 	if err != nil {
 		return
 	}
@@ -22,9 +22,9 @@ func main() {
 	defer cancel()
 
 	user, err := client.CreatUser(ctx, &UserProto.CreatUserInfo{
-		NickName: "18612121212",
+		NickName: "18612121213",
 		PassWord: "123456",
-		Mobile:   "18612121212",
+		Mobile:   "18612121213",
 	})
 	if err != nil {
 		panic(err)

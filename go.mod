@@ -3,6 +3,7 @@ module SESS
 go 1.16
 
 require (
+	github.com/google/uuid v1.1.2
 	github.com/hashicorp/consul/api v1.12.0
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/nacos-group/nacos-sdk-go v1.1.1
