@@ -1,14 +1,16 @@
 package initialize
 
 import (
-	UserProto "SESS/api/rpc/proto"
-	"SESS/cmd/grpc_svr_user/handler"
 	"fmt"
+	"net"
+
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
-	"net"
+
+	UserProto "SESS/api/rpc/proto"
+	"SESS/cmd/grpc_svr_user/handler"
 )
 
 func InitRegisterGrpcServer(ip string, port int) {

@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	DBCfg  config.DBInfo
-	Consul config.Consul
+	ServerInfo config.ServerConfig
+	CfgInfo    config.Config
 )
 
 var (

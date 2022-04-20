@@ -15,7 +15,7 @@ import (
 )
 
 func InitDB() {
-	c := global.DBCfg
+	c := global.ServerInfo.DB
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		c.UserName, c.PassWord, c.IP, c.Port, c.Name)
 	newLogger := logger.New(

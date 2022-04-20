@@ -10,8 +10,8 @@ import (
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
 
-	cfg "SESS/cmd/grpc_svr_user/config"
-	"SESS/cmd/grpc_svr_user/global"
+	cfg "SESS/cmd/web_api_user/config"
+	"SESS/cmd/web_api_user/global"
 )
 
 func GetConfigByFile(fileName string) cfg.Config {
@@ -66,34 +66,22 @@ func getConfigInfo(configClient config_client.IConfigClient, DataId, Group strin
 		Group:  Group,
 	})
 	if err != nil {
-		panic(err)
+		return ""
 	}
 	return DbInfo
 }
 
 func InitConfig(fileName string) {
 
-	// 1-链接Nac
+	// 1 - 链接Nac
 	global.CfgInfo = GetConfigByFile(fileName)
 	configClient := ConnNac(global.CfgInfo)
-
 	// 2-获取数据信息
 	if str := getConfigInfo(configClient, global.CfgInfo.DataId, global.CfgInfo.Group); str != "" {
-		if err := yaml.Unmarshal([]byte(str), &global.ServerInfo); err != nil {
-			zap.S().Panic(global.ServerInfo)
+		if err := yaml.Unmarshal([]byte(str), &global.ServerConfig); err != nil {
+			zap.S().Panic(global.ServerConfig)
 			return
 		}
-		zap.S().Info(global.ServerInfo)
+		zap.S().Info(global.ServerConfig)
 	}
-
-	//// 检测配置文件改变
-	//configClient.ListenConfig(vo.ConfigParam{
-	//	DataId: "dbconfig.yaml",
-	//	Group:  "dev",
-	//	OnChange: func(namespace, group, dataId, data string) {
-	//		fmt.Println("配置文件发生更改")
-	//		fmt.Printf("namespace is %s\n, group is %s\n, dataId is %s\n, data is %s\n",
-	//			namespace, group, dataId, data)
-	//	},
-	//})
 }

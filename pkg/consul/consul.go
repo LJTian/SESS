@@ -2,7 +2,14 @@ package consul
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/consul/api"
+	"go.uber.org/zap"
+)
+
+var (
+	CheckHttp = "HTTP"
+	CheckGrpc = "GRPC"
 )
 
 // 建立链接
@@ -18,14 +25,29 @@ func Connet(addr string, port int) *api.Client {
 }
 
 // 注册
-func Register(GClient *api.Client, address string, port int, name string, tags []string, id string) error {
+func Register(GClient *api.Client,
+	address string, port int, name string, tags []string, id string, checkType string) error {
 
-	//生成对应的检查对象
-	check := &api.AgentServiceCheck{
-		GRPC:                           fmt.Sprintf("%s:%d", address, port),
-		Timeout:                        "5s",
-		Interval:                       "5s",
-		DeregisterCriticalServiceAfter: "15s",
+	var check *api.AgentServiceCheck
+
+	if checkType == CheckHttp {
+		//生成对应的检查对象
+		check = &api.AgentServiceCheck{
+			HTTP:                           fmt.Sprintf("http://%s:%d/health", address, port),
+			Timeout:                        "5s",
+			Interval:                       "5s",
+			DeregisterCriticalServiceAfter: "150s",
+		}
+		zap.S().Infof("健康检查地址:[%s]", check.HTTP)
+	} else {
+		//生成对应的检查对象
+		check = &api.AgentServiceCheck{
+			GRPC:                           fmt.Sprintf("%s:%d", address, port),
+			Timeout:                        "5s",
+			Interval:                       "5s",
+			DeregisterCriticalServiceAfter: "150s",
+		}
+		zap.S().Infof("健康检查地址:[%s]", check.GRPC)
 	}
 
 	//生成注册对象
@@ -51,15 +73,4 @@ func UnRegister(GClient *api.Client, serverId string) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func main() {
-
-	// 1、建立链接
-	GClient := Connet("10.211.55.3", 8500)
-	// 2、注册服务
-	Register(GClient, "10.211.55.3", 8080, "test", []string{"test"}, "test3")
-	Register(GClient, "10.211.55.3", 8080, "test", []string{"test"}, "test4")
-	// 3、摘掉服务
-	//UnRegister("test")
 }

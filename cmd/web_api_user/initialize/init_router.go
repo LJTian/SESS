@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"SESS/cmd/web_api_user/middlewares"
+	"SESS/cmd/web_api_user/router"
 	"fmt"
 	"net/http"
 
@@ -20,8 +21,8 @@ func InitRouters(port int) {
 	//配置跨域
 	Router.Use(middlewares.Cors())
 
-	_ = Router.Group("/u/v1")
-	//router.InitUserRouter(ApiGroup)
+	ApiGroup := Router.Group("/u/v1")
+	router.InitUserRouter(ApiGroup)
 	//router.InitBaseRouter(ApiGroup)
 
 	go func() {

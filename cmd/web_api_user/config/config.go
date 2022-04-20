@@ -1,24 +1,26 @@
 package config
 
+type UserSrvConfig struct {
+	Host string `yaml:"host" json:"host"`
+	Port int    `yaml:"port" json:"port"`
+	Name string `yaml:"name" json:"name"`
+}
+
+type JWTConfig struct {
+	SigningKey string `yaml:"key"`
+}
+
 type RegistrationCenter struct {
 	IP   string `yaml:"ip"`
 	Port int    `yaml:"port"`
 }
 
-type DBInfo struct {
-	IP       string `yaml:"ip"`
-	Port     int    `yaml:"port"`
-	Name     string `yaml:"name"`
-	UserName string `yaml:"username"`
-	PassWord string `yaml:"password"`
-}
-
-// ServerConfig
 type ServerConfig struct {
-	Name string             `yaml:"name"`
-	Tags []string           `yaml:"tags"`
-	DB   DBInfo             `yaml:"db"`
-	RC   RegistrationCenter `yaml:"rc"`
+	Name        string             `yaml:"name"`
+	Tags        []string           `yaml:"tags"`
+	RC          RegistrationCenter `yaml:"rc"`
+	JWTInfo     JWTConfig          `yaml:"jwt"`
+	UserSrvInfo string             `yaml:"userServer"`
 }
 
 // 配置文件
