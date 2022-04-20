@@ -1,6 +1,9 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin/binding"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,6 +13,7 @@ import (
 
 	"SESS/cmd/web_api_user/global"
 	"SESS/cmd/web_api_user/initialize"
+	myvalidator "SESS/cmd/web_api_user/validator"
 	"SESS/pkg/consul"
 	"SESS/pkg/tools"
 )
@@ -52,6 +56,23 @@ func main() {
 
 	// 5-初始化svr链接
 	initialize.InitSvrConn()
+
+	// 6-初始化翻译
+	//4. 初始化翻译
+	if err := initialize.InitTrans("zh"); err != nil {
+		panic(err)
+	}
+
+	//注册验证器
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		_ = v.RegisterValidation("mobile", myvalidator.ValidateMobile)
+		_ = v.RegisterTranslation("mobile", global.Trans, func(ut ut.Translator) error {
+			return ut.Add("mobile", "{0} 非法的手机号码!", true) // see universal-translator for details
+		}, func(ut ut.Translator, fe validator.FieldError) string {
+			t, _ := ut.T("mobile", fe.Field())
+			return t
+		})
+	}
 
 	// 接收终止信号
 	quit := make(chan os.Signal)

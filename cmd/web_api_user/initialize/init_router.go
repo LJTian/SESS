@@ -11,6 +11,7 @@ import (
 
 func InitRouters(port int) {
 	Router := gin.Default()
+
 	Router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"code":    http.StatusOK,
